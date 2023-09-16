@@ -23,11 +23,12 @@ const Header: React.FC<HeaderProps> = ({ handelSideBar }) => {
   }
 
   if (success) {
-    window.location.reload();
+    alert("Logged out successfully..!!");
+    setTimeout(() => window.location.reload(), 2000);
   }
 
   return (
-    <header className="bg-[#662671] px-5 md:py-4 py-2 fixed w-full max-w-[2500px] z-50">
+    <header className="bg-[#662671] px-5 md:py-4 py-3 fixed w-full max-w-[2500px] z-50">
       <div className="flex justify-between items-center">
         <div className="flex justify-center items-center gap-5">
           <button onClick={handelSideBar} className="lg:hidden">
