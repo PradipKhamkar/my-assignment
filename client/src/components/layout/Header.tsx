@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ handelSideBar }) => {
 
   if (success) {
     alert("Logged out successfully..!!");
-    setTimeout(() => window.location.reload(), 2000);
+    window.location.reload();
   }
 
   return (
