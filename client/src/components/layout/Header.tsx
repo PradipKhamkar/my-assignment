@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ handelSideBar }) => {
           <img
             src={require("../../assets/images/headerLogo.png")}
             alt=""
-            className="md:w-[11rem]"
+            className="md:w-[11rem] w-36"
           />
         </div>
         <button

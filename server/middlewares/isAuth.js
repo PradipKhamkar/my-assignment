@@ -14,7 +14,7 @@ const isAuthUser = async (req, res, next) => {
         next();
       }
     } else {
-      console.log("token not set yrt");
+      // console.log("token not set yet");
       sendError(res, null);
     }
   } catch (error) {

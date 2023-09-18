@@ -1,9 +1,9 @@
-const sendError = (res,message,error)=>{
-res.status(400).json({
-    success:false,
+const sendError = (res, message, error) => {
+  res.status(400).json({
+    success: false,
     message,
-    error
-})
-}
+    error,
+  });
+};
 
-module.exports = sendError
+module.exports = sendError;

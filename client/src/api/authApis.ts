@@ -1,12 +1,10 @@
 import axios from "axios";
+import { prefix } from "./apiPrefix";
 
-//const BASE_URL = 'http://localhost:8000/api/v1';
-const prefix = "/api/v1/user";
-
-//lOGIN USER
+//LOGIN USER
 export const LoginUser = async (email: String, password: any) => {
   try {
-    const { data } = await axios.post(`${prefix}/login`, {
+    const { data } = await axios.post(`${prefix}/user/login`, {
       email,
       password,
     });
@@ -21,7 +19,7 @@ export const LoginUser = async (email: String, password: any) => {
 // GET LOGGED USER
 export const getLoggedUser = async () => {
   try {
-    const { data } = await axios.get(`${prefix}/getloggedUser`);
+    const { data } = await axios.get(`${prefix}/user/getloggedUser`);
     return data;
   } catch (error: any) {
     console.log(error);
@@ -32,7 +30,7 @@ export const getLoggedUser = async () => {
 // LOG OUT USER
 export const logOut = async () => {
   try {
-    const { data } = await axios.get(`${prefix}/logout`);
+    const { data } = await axios.get(`${prefix}/user/logout`);
     return data;
   } catch (error: any) {
     throw error?.response?.message;

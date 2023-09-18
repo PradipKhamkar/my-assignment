@@ -2,24 +2,28 @@ import { useState } from "react";
 import { TextInput, DropDownInput } from "../../common/Inputs";
 import { RootState } from "../../../redux/store";
 import BoxContainer from "../../container/BoxContainer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/hook";
-import {
-  addCategoryAction,
-  clearError,
-  clearMessage,
-} from "../../../redux/categorySlice/addCategorySlice";
 import { useSelector } from "react-redux";
 import Loader from "../../common/Loader";
+import {
+  updateCategoryAction,
+  clearError,
+  clearMessage,
+} from "../../../redux/categorySlice/updateCategorySlice";
 
-const AddCategory = () => {
+const EditCategory = () => {
   const Navigate = useNavigate();
-  const { loading, error, message } = useSelector(
-    (state: RootState) => state.addCategory
+  const location = useLocation();
+  const [categoryData, setCategoryData] = useState(location?.state);
+
+  const { loading, error, message, success } = useSelector(
+    (state: RootState) => state.updateCategory
   );
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("");
+
+  const [name, setName] = useState(categoryData?.name);
+  const [description, setDescription] = useState(categoryData?.description);
+  const [status, setStatus] = useState(categoryData?.status);
 
   const dispatch = useAppDispatch();
 
@@ -30,24 +34,24 @@ const AddCategory = () => {
       status.trim().length !== 0
     ) {
       dispatch(
-        addCategoryAction({
+        updateCategoryAction({
+          _id: categoryData?._id,
           name,
           description,
           status,
         })
       );
-      setName("");
-      setDescription("");
-      setStatus("");
     } else {
       alert("all field are required");
     }
   };
 
-  if (message) {
+  if (message || success) {
     alert(message);
     dispatch(clearMessage());
+    Navigate("/dashboard/category");
   }
+
   if (error) {
     dispatch(clearError());
   }
@@ -105,4 +109,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default EditCategory;

@@ -4,15 +4,16 @@ import {
   TextInput,
   DropDownInput,
   FileInput,
+  EditCategoryDropDown,
 } from "../../common/Inputs";
 import BoxContainer from "../../container/BoxContainer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/hook";
 import {
-  addProductAction,
-  clearError as clearProductError,
-  clearMessage as clearProductMessage,
-} from "../../../redux/productSlice/addProductSlice";
+  updateProductAction,
+  clearError,
+  clearMessage,
+} from "../../../redux/productSlice/updateProduct";
 import {
   getCategoriesAction,
   clearError as clearCategoryError,
@@ -23,12 +24,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import Loader from "../../common/Loader";
 
-const AddProduct = () => {
+const EditProduct = () => {
   const Navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
+  const [product, setProduct] = useState(location.state);
+
   const { loading, message, error, success } = useSelector(
-    (state: RootState) => state.addProduct
+    (state: RootState) => state.updateProduct
   );
 
   const {
@@ -38,14 +42,15 @@ const AddProduct = () => {
     categoriesData,
   } = useSelector((state: RootState) => state.getCategories);
 
-  const [category, setCategory] = useState("");
-  const [name, setName] = useState("");
-  const [packSize, setPackSize] = useState("");
-  const [mrp, setMrp] = useState("");
-  const [status, setStatus] = useState("");
+  const [category, setCategory] = useState(product?.category?._id);
+  const [name, setName] = useState(product?.name);
+  const [packSize, setPackSize] = useState(product?.packSize);
+  const [mrp, setMrp] = useState(product?.mrp);
+  const [status, setStatus] = useState(product?.status);
   const [image, setImage] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState(product?.image);
 
+  // console.log(product?.category?._id);
   const handelSubmit = () => {
     if (
       category.trim().length !== 0 &&
@@ -54,7 +59,8 @@ const AddProduct = () => {
       mrp.trim().length !== 0
     ) {
       dispatch(
-        addProductAction({
+        updateProductAction({
+          _id: product?._id,
           name,
           category,
           mrp,
@@ -63,12 +69,6 @@ const AddProduct = () => {
           status,
         })
       );
-      setCategory("");
-      setImage("");
-      setMrp("");
-      setName("");
-      setPackSize("");
-      setStatus("");
     } else {
       alert("All fields are required");
     }
@@ -87,19 +87,15 @@ const AddProduct = () => {
   };
 
   if (success && message) {
-    alert("Product Added Successfully");
-    dispatch(clearProductMessage());
-  }
-
-  if (message || categoryMessage) {
-    dispatch(clearCategoryMessage());
-    dispatch(clearProductMessage());
+    alert("Product Updated Successfully");
+    dispatch(clearMessage());
+    Navigate("/dashboard/product");
   }
 
   if (error || categoryError) {
-    alert("Failed to load Data");
+    alert(error);
     // console.log(categoryError);
-    dispatch(clearProductError());
+    dispatch(clearError());
     dispatch(clearCategoryError());
   }
 
@@ -109,7 +105,7 @@ const AddProduct = () => {
 
   return loading || categoryLoading ? (
     <Loader />
-  ) : !error && !categoryError ? (
+  ) : !categoryError ? (
     <BoxContainer clasName="flex flex-col justify-between p-5  pb-8">
       <div>
         <div className="flex justify-start items-center gap-4">
@@ -119,12 +115,13 @@ const AddProduct = () => {
             alt=""
             onClick={() => Navigate(-1)}
           />
-          <h1 className="text-lg font-bold">Add Products</h1>
+          <h1 className="text-lg font-bold">Edit Product</h1>
         </div>
         <div className="mt-16 flex justify-start flex-wrap md:gap-10 gap-14">
-          <CategoryDropDown
+          <EditCategoryDropDown
             value={category}
             label="Category"
+            productCategory={product?.category}
             handelChange={setCategory}
             categoriesData={categoriesData}
             className="md:w-80 w-full"
@@ -182,4 +179,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

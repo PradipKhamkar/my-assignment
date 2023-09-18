@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -7,10 +7,26 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import productData, { ProductDataInterface } from "../../../data/ProductData";
+import { deleteProduct, ProductDataInterface } from "../../../api/productApis";
 import ConfirmAlert from "../../common/ConfirmAlert";
+import { useAppDispatch } from "../../../hooks/hook";
+import {
+  clearMessage,
+  deleteProductAction,
+} from "../../../redux/productSlice/deleteProductSlice";
+import { RootState } from "../../../redux/store";
+import { useSelector } from "react-redux";
+import { getProductsAction } from "../../../redux/productSlice/getProductsSlice";
+import { useNavigate } from "react-router-dom";
 
-const ProductDataTable = () => {
+const ProductDataTable: React.FC<any> = ({ productData, sentStateBack }) => {
+  const { loading, message, success, error } = useSelector(
+    (state: RootState) => state.deleteProduct
+  );
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [data, setData] = useState(() => [...productData]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -18,17 +34,30 @@ const ProductDataTable = () => {
 
   const handleDelete = (e: any) => {
     ConfirmAlert("Confirm", "Delete", "Are you sure you want to delete ?", () =>
-      console.log(e)
+      dispatch(deleteProductAction(e))
     );
   };
 
   const handleEdit = (e: any) => {
-    console.log(e);
+    const product = productData?.filter((product: any) => product._id === e);
+    navigate("/dashboard/product/edit", {
+      state: product[0],
+    });
   };
 
+  if (success && message) {
+    dispatch(clearMessage());
+    dispatch(getProductsAction());
+    // console.log("deleted");
+  }
+
   const columns = [
-    columnHelper.accessor("id", {
-      cell: (info) => info.getValue(),
+    columnHelper.accessor("_id", {
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <p className="">{info.row.original._id?.slice(0, 5)}...</p>
+        </div>
+      ),
       header: "ID",
     }),
     columnHelper.accessor("name", {
@@ -40,22 +69,30 @@ const ProductDataTable = () => {
       header: "Pack Size",
     }),
     columnHelper.accessor("category", {
-      cell: (info) => info.getValue(),
+      cell: (info) => (
+        <div className="flex justify-center items-center">
+          <p className="">{info.row.original.category.name}</p>
+        </div>
+      ),
       header: "Category",
     }),
-    columnHelper.accessor("MRP", {
+    columnHelper.accessor("mrp", {
       cell: (info) => info.getValue(),
       header: "MRP",
     }),
-    columnHelper.accessor("Image", {
+    columnHelper.accessor("image", {
       cell: (info) => (
         <div className="flex justify-center items-center">
-          <img src={info.row.original.Image} alt="product image" />
+          <img
+            src={info.row.original.image}
+            alt="product image"
+            className="h-16 w-16"
+          />
         </div>
       ),
       header: "Image",
     }),
-    columnHelper.accessor("Status", {
+    columnHelper.accessor("status", {
       cell: (info) => info.getValue(),
       header: "Status",
     }),
@@ -66,13 +103,13 @@ const ProductDataTable = () => {
           <img
             src={require("../../../assets/images/editIcon.png")}
             alt=""
-            onClick={() => handleEdit(info.row.original.id)}
+            onClick={() => handleEdit(info.row.original._id)}
             className="cursor-pointer w-5"
           />
           <img
             src={require("../../../assets/images/deleteIcon.png")}
             alt=""
-            onClick={() => handleDelete(info.row.original.id)}
+            onClick={() => handleDelete(info.row.original._id)}
             className="cursor-pointer w-5"
           />
         </div>
@@ -91,6 +128,10 @@ const ProductDataTable = () => {
     getSortedRowModel: getSortedRowModel(),
     debugTable: true,
   });
+
+  useEffect(() => {
+    sentStateBack([data, setData]);
+  }, []);
 
   return (
     <div className="overflow-auto">

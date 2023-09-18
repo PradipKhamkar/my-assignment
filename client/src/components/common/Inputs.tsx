@@ -124,6 +124,7 @@ export const DropDownInput: React.FC<DropDownInputPrps> = ({
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
   return (
     <div className={` relative ${className}`}>
       <div
@@ -152,7 +153,7 @@ export const DropDownInput: React.FC<DropDownInputPrps> = ({
           }`}
         >
           {option.map((item, index) => {
-            console.log(option.length - 1 === index);
+            // console.log(option.length - 1 === index);
             return (
               <p
                 className={`text-center text-base cursor-pointer ${
@@ -183,7 +184,6 @@ interface FileInputProps {
 }
 
 export const FileInput: React.FC<FileInputProps> = ({
-  value,
   handelChange,
   label,
   className,
@@ -223,6 +223,155 @@ export const FileInput: React.FC<FileInputProps> = ({
           handelChange(e);
         }}
       />
+    </div>
+  );
+};
+
+interface CategoryInterface {
+  value: any;
+  categoriesData: any;
+  label: String;
+  handelChange: Function;
+  className?: String;
+}
+
+export const CategoryDropDown: React.FC<CategoryInterface> = ({
+  value,
+  categoriesData,
+  label,
+  handelChange,
+  className,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  const [selectedCategory, setSelectedCategory] = useState("");
+  return (
+    <div className={` relative ${className}`}>
+      <div
+        className={`relative h-12 inputBorder rounded-md w-full flex items-center px-2 cursor-pointer`}
+        onClick={toggleDropdown}
+      >
+        <label
+          htmlFor="name"
+          className="absolute -top-3 left-[0.8rem] backdrop-blur-md  text-base px-1 pr-3 "
+        >
+          {label}
+        </label>
+        <div className="flex justify-between items-center w-full">
+          <h3 className="text-base text-center pl-3">{selectedCategory}</h3>
+          <img
+            src={require("../../assets/images/dropDownIcon.png")}
+            alt=""
+            className="w-4"
+          />
+        </div>
+      </div>
+      {
+        <div
+          className={`bg-[#edeaea] transition-all absolute w-full top-14 rounded-lg z-10 ${
+            isOpen ? "flex flex-col" : "hidden"
+          }`}
+        >
+          {categoriesData?.map((item: any, index: number) => {
+            return (
+              <p
+                className={`text-center text-base cursor-pointer ${
+                  categoriesData.length - 1 === index
+                    ? "p-4"
+                    : "border-b-[0.10rem] border-[#CBCBCB] p-4"
+                }`}
+                onClick={() => {
+                  toggleDropdown();
+                  setSelectedCategory(item.name);
+                  handelChange(item._id);
+                }}
+              >
+                {item.name}
+              </p>
+            );
+          })}
+        </div>
+      }
+    </div>
+  );
+};
+
+interface EditCategoryInterface {
+  value: any;
+  categoriesData: any;
+  productCategory: any;
+  label: String;
+  handelChange: Function;
+  className?: String;
+}
+
+export const EditCategoryDropDown: React.FC<EditCategoryInterface> = ({
+  value,
+  categoriesData,
+  productCategory,
+  label,
+  handelChange,
+  className,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoriesData?.filter(
+      (category: any) => category?._id === productCategory?._id
+    )[0]?.name
+  );
+
+  return (
+    <div className={` relative ${className}`}>
+      <div
+        className={`relative h-12 inputBorder rounded-md w-full flex items-center px-2 cursor-pointer`}
+        onClick={toggleDropdown}
+      >
+        <label
+          htmlFor="name"
+          className="absolute -top-3 left-[0.8rem] backdrop-blur-md  text-base px-1 pr-3 "
+        >
+          {label}
+        </label>
+        <div className="flex justify-between items-center w-full">
+          <h3 className="text-base text-center pl-3">{selectedCategory}</h3>
+          <img
+            src={require("../../assets/images/dropDownIcon.png")}
+            alt=""
+            className="w-4"
+          />
+        </div>
+      </div>
+      {
+        <div
+          className={`bg-[#edeaea] transition-all absolute w-full top-14 rounded-lg z-10 ${
+            isOpen ? "flex flex-col" : "hidden"
+          }`}
+        >
+          {categoriesData?.map((item: any, index: number) => {
+            return (
+              <p
+                className={`text-center text-base cursor-pointer ${
+                  categoriesData.length - 1 === index
+                    ? "p-4"
+                    : "border-b-[0.10rem] border-[#CBCBCB] p-4"
+                }`}
+                onClick={() => {
+                  toggleDropdown();
+                  setSelectedCategory(item.name);
+                  handelChange(item._id);
+                }}
+              >
+                {item.name}
+              </p>
+            );
+          })}
+        </div>
+      }
     </div>
   );
 };
