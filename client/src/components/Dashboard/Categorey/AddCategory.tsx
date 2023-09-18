@@ -87,7 +87,7 @@ const AddCategory = () => {
           />
         </div>
       </div>
-      <div className="flex lg:justify-end gap-8 items-center justify-center">
+      <div className="flex lg:justify-end gap-8 items-center justify-center md:mt-0 mt-10 ">
         <button
           className="border-[#676767] text-[#676767] border-[0.2px] outline-none bg-none rounded-2xl px-5 md:px-14 py-2"
           onClick={() => Navigate(-1)}
