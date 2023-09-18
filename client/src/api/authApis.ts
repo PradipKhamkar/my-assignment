@@ -2,7 +2,7 @@ import axios from "axios";
 import { prefix } from "./apiPrefix";
 
 //LOGIN USER
-export const LoginUser = async (email: String, password: any) => {
+export const LoginUser = async (email: string, password: any) => {
   try {
     const { data } = await axios.post(`${prefix}/user/login`, {
       email,

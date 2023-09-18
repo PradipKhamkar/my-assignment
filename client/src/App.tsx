@@ -39,7 +39,7 @@ const App = () => {
             path="/"
             element={isAuth ? <RedirectToDashboard /> : <Login />}
           />
-          <Route path="/dashboard" element={isAuth ? <Dashboard /> : <Login />}>
+          <Route path="/dashboard" element={isAuth ? <RedirectToDashboard /> : <Login />}>
             <Route path="home" element={<DashboardHome />} />
             <Route path="category" element={<Category />} />
             <Route path="product" element={<Product />} />
